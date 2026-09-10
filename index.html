@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Interaktif: Persamaan Kuadrat & Teorema Vieta (40 Soal SMA)</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- KaTeX CSS & JS for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .font-mono-code {
+            font-family: 'Fira Code', monospace;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased leading-relaxed min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+    <header class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md text-white border-b border-slate-800 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-tr from-indigo-600 to-purple-600 text-white w-10 h-10 rounded-2xl flex items-center justify-center font-black text-lg shadow-lg shadow-indigo-500/30 ring-2 ring-indigo-400/30">
+                    $ax^2$
+                </div>
+                <div>
+                    <span class="font-extrabold text-base sm:text-lg tracking-tight bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 bg-clip-text text-transparent block">Mastery Kuadrat & Vieta</span>
+                    <span class="text-[10px] text-slate-400 block -mt-1 font-medium">Kuis Interaktif SMA — 40 Soal</span>
+                </div>
+            </div>
+
+            <!-- Stats & Navigation Tools -->
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <button onclick="toggleGridModal()" class="flex items-center space-x-1.5 bg-slate-800 hover:bg-slate-700 text-indigo-300 px-3 py-1.5 rounded-xl border border-slate-700 text-xs font-semibold transition active:scale-95">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                    <span class="hidden sm:inline">Peta Soal</span>
+                </button>
+                <div class="bg-indigo-950/80 border border-indigo-700/50 px-3 py-1.5 rounded-xl text-xs font-bold text-indigo-200 flex items-center space-x-1.5">
+                    <span class="text-slate-400">Skor:</span>
+                    <span id="header-score" class="text-emerald-400 font-mono text-sm">0 / 40</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        
+        <!-- Welcome Banner & Controls -->
+        <div class="bg-white rounded-3xl shadow-xl border border-slate-200/80 p-6 sm:p-8 mb-6 transition-all">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-5 mb-5">
+                <div>
+                    <div class="flex items-center space-x-2 mb-2">
+                        <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-indigo-100 text-indigo-800 border border-indigo-200 uppercase tracking-widest inline-block">
+                            SMA Kelas 10 - 12
+                        </span>
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Evaluasi Persamaan Kuadrat & Teorema Vieta</h1>
+                </div>
+
+                <div class="flex items-center space-x-2 shrink-0">
+                    <button onclick="showSummaryModal()" class="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold px-3.5 py-2 rounded-xl border border-indigo-200 transition active:scale-95">
+                        📊 Ringkasan Skor
+                    </button>
+                    <button onclick="confirmResetQuiz()" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold px-3.5 py-2 rounded-xl border border-rose-200 transition active:scale-95">
+                        🔄 Reset Kuis
+                    </button>
+                </div>
+            </div>
+
+            <!-- Category Filter Bar -->
+            <div class="space-y-3">
+                <div class="flex items-center justify-between text-xs font-bold text-slate-600">
+                    <span class="flex items-center space-x-1">
+                        <span>Filter Kategori Soal:</span>
+                    </span>
+                    <span id="category-count-label" class="text-indigo-600 font-mono">Semua (40 Soal)</span>
+                </div>
+                <div class="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-2 pt-1 text-xs font-semibold">
+                    <button onclick="filterCategory('ALL')" id="filter-btn-ALL" class="filter-btn active bg-indigo-600 text-white px-3.5 py-1.5 rounded-xl transition shrink-0 shadow-sm">Semua (40)</button>
+                    <button onclick="filterCategory('Pemfaktoran')" id="filter-btn-Pemfaktoran" class="filter-btn bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-1.5 rounded-xl transition shrink-0">Pemfaktoran (8)</button>
+                    <button onclick="filterCategory('Diskriminan')" id="filter-btn-Diskriminan" class="filter-btn bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-1.5 rounded-xl transition shrink-0">Diskriminan & Sifat (8)</button>
+                    <button onclick="filterCategory('Vieta')" id="filter-btn-Vieta" class="filter-btn bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-1.5 rounded-xl transition shrink-0">Teorema Vieta (10)</button>
+                    <button onclick="filterCategory('Persamaan Baru')" id="filter-btn-Persamaan Baru" class="filter-btn bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-1.5 rounded-xl transition shrink-0">PK Baru (6)</button>
+                    <button onclick="filterCategory('Aplikasi')" id="filter-btn-Aplikasi" class="filter-btn bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-1.5 rounded-xl transition shrink-0">Aplikasi & HOTS (8)</button>
+                </div>
+            </div>
+
+            <!-- Progress Bar Info -->
+            <div class="space-y-1.5 mt-4 pt-3 border-t border-slate-100">
+                <div class="flex justify-between text-xs font-bold text-slate-600">
+                    <span>Progres Terjawab: <span id="progress-text" class="text-indigo-600 font-mono">0 dari 40 Soal</span></span>
+                    <span id="progress-percent" class="font-mono text-indigo-600">0%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden border border-slate-200">
+                    <div id="progress-bar" class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-full w-0 transition-all duration-300"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Left Panel: Question Display Card (8 cols) -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <div id="question-card" class="bg-white rounded-3xl shadow-xl border border-slate-200 p-6 sm:p-8 relative min-h-[420px] flex flex-col justify-between">
+                    <div>
+                        <!-- Question Header Badge & Category -->
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-4 mb-6">
+                            <div class="flex items-center space-x-2">
+                                <span id="q-number-badge" class="bg-indigo-600 text-white font-extrabold text-xs px-3 py-1 rounded-xl shadow-md">Soal #1</span>
+                                <span id="q-category-badge" class="bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-xl border border-purple-200">Kategori</span>
+                            </div>
+                            <span id="q-status-badge" class="text-xs font-bold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-lg">Belum Dijawab</span>
+                        </div>
+
+                        <!-- Question Text -->
+                        <div class="mb-6">
+                            <div id="q-text" class="text-base sm:text-lg font-bold text-slate-900 leading-relaxed">
+                                Memuat pertanyaan...
+                            </div>
+                        </div>
+
+                        <!-- Answer Options Grid -->
+                        <div id="q-options" class="space-y-3 mb-6">
+                            <!-- Options will be rendered dynamically -->
+                        </div>
+
+                        <!-- Rationale / Feedback Box -->
+                        <div id="q-rationale" class="hidden p-5 rounded-2xl border text-xs sm:text-sm space-y-2 transition-all">
+                            <!-- Explanation here -->
+                        </div>
+                    </div>
+
+                    <!-- Question Card Bottom Navigation Bar -->
+                    <div class="flex justify-between items-center border-t border-slate-100 pt-6 mt-6">
+                        <button id="btn-prev" onclick="prevQuestion()" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs sm:text-sm font-bold rounded-xl transition flex items-center space-x-2 active:scale-95">
+                            <span>← Sebelumnya</span>
+                        </button>
+
+                        <span id="nav-counter" class="text-xs font-bold text-slate-500 font-mono">1 / 40</span>
+
+                        <button id="btn-next" onclick="nextQuestion()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-bold rounded-xl transition flex items-center space-x-2 shadow-md shadow-indigo-500/20 active:scale-95">
+                            <span>Selanjutnya →</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Panel: Navigation Grid Sidebar (4 cols) -->
+            <div class="lg:col-span-4 space-y-6">
+                <div class="bg-white rounded-3xl shadow-xl border border-slate-200 p-6 sticky top-24">
+                    <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+                        <h3 class="font-bold text-slate-900 text-sm flex items-center space-x-2">
+                            <span>Peta Nomor Soal</span>
+                        </h3>
+                        <span class="text-[11px] text-slate-400">Klik nomor untuk memilih</span>
+                    </div>
+
+                    <!-- Grid Numbers 1-40 -->
+                    <div id="numbers-grid" class="grid grid-cols-5 gap-2 max-h-[380px] overflow-y-auto custom-scrollbar p-1">
+                        <!-- Generated via JavaScript -->
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="mt-6 pt-4 border-t border-slate-100 grid grid-cols-3 gap-2 text-[10px] font-semibold text-slate-600 text-center">
+                        <div class="flex items-center justify-center space-x-1 bg-slate-100 py-1.5 px-1 rounded-lg">
+                            <span class="w-2.5 h-2.5 rounded-full bg-slate-300"></span>
+                            <span>Belum</span>
+                        </div>
+                        <div class="flex items-center justify-center space-x-1 bg-emerald-50 text-emerald-800 py-1.5 px-1 rounded-lg border border-emerald-200">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                            <span>Benar</span>
+                        </div>
+                        <div class="flex items-center justify-center space-x-1 bg-rose-50 text-rose-800 py-1.5 px-1 rounded-lg border border-rose-200">
+                            <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                            <span>Salah</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Modal 1: Grid Modal (Mobile / Fullscreen) -->
+    <div id="grid-modal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
+            <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
+                <h3 class="font-bold text-slate-900 text-base">Peta Navigasi 40 Soal</h3>
+                <button onclick="toggleGridModal()" class="text-slate-400 hover:text-slate-600 font-bold p-1">✕</button>
+            </div>
+            <div id="modal-numbers-grid" class="grid grid-cols-5 gap-2 max-h-[360px] overflow-y-auto custom-scrollbar p-1">
+                <!-- Modal Grid Content -->
+            </div>
+            <div class="mt-5 text-center">
+                <button onclick="toggleGridModal()" class="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-xl text-xs">Tutup Peta</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Summary / Score Overview Modal -->
+    <div id="summary-modal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div class="text-center pb-4 border-b border-slate-100">
+                <div class="w-16 h-16 bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-2xl mx-auto flex items-center justify-center text-white text-2xl font-black shadow-lg mb-3">
+                    🏆
+                </div>
+                <h3 class="text-xl font-extrabold text-slate-900">Hasil & Evaluasi Kuis</h3>
+                <p class="text-xs text-slate-500 mt-1">Persamaan Kuadrat & Teorema Vieta</p>
+            </div>
+
+            <div class="py-6 space-y-4">
+                <div class="grid grid-cols-3 gap-3 text-center">
+                    <div class="bg-slate-50 border border-slate-200 p-3 rounded-2xl">
+                        <span class="block text-[10px] text-slate-500 font-bold uppercase tracking-wider">Dijawab</span>
+                        <span id="modal-stat-answered" class="text-lg font-extrabold text-slate-800 font-mono">0 / 40</span>
+                    </div>
+                    <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-2xl">
+                        <span class="block text-[10px] text-emerald-700 font-bold uppercase tracking-wider">Benar</span>
+                        <span id="modal-stat-correct" class="text-lg font-extrabold text-emerald-600 font-mono">0</span>
+                    </div>
+                    <div class="bg-rose-50 border border-rose-200 p-3 rounded-2xl">
+                        <span class="block text-[10px] text-rose-700 font-bold uppercase tracking-wider">Salah</span>
+                        <span id="modal-stat-wrong" class="text-lg font-extrabold text-rose-600 font-mono">0</span>
+                    </div>
+                </div>
+
+                <div class="bg-indigo-50 border border-indigo-200 p-4 rounded-2xl text-center space-y-1">
+                    <span class="text-xs text-indigo-700 font-bold uppercase tracking-wider">Nilai Akhir (Skala 100)</span>
+                    <div id="modal-score-grade" class="text-3xl font-black text-indigo-900 font-mono">0</div>
+                    <p id="modal-grade-feedback" class="text-xs font-semibold text-indigo-800">Selesaikan soal untuk melihat predikat.</p>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-2 pt-2 border-t border-slate-100">
+                <button onclick="closeSummaryModal()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition">Lanjutkan Kuis</button>
+                <button onclick="confirmResetQuiz()" class="w-full py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl text-xs transition shadow-md shadow-rose-500/20">Ulangi Dari Awal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 text-center text-xs mt-12">
+        <p>© 2026 Kuis Interaktif Matematika SMA — Persamaan Kuadrat, Diskriminan, & Teorema Vieta.</p>
+    </footer>
+
+    <script>
+        // =========================================================================
+        // 40 QUESTIONS DATABASE (Mathematically Rigorous & Balanced Answers: 10 A, 10 B, 10 C, 10 D)
+        // =========================================================================
+        const quizQuestions = [
+            // --- KATEGORI 1: PEMFAKTORAN & AKAR (1-8) ---
+            {
+                id: 1,
+                category: "Pemfaktoran",
+                q: "Akar-akar dari persamaan kuadrat $x^2 - 13x + 36 = 0$ adalah...",
+                opts: ["$x = -4$ dan $x = -9$", "$x = 3$ dan $x = 12$", "$x = 4$ dan $x = 9$", "$x = -3$ dan $x = -12$"],
+                ans: 2,
+                exp: "Bentuk faktor dari $x^2 - 13x + 36 = 0$ adalah $(x - 4)(x - 9) = 0$. Maka akar-akarnya adalah $x_1 = 4$ dan $x_2 = 9$."
+            },
+            {
+                id: 2,
+                category: "Pemfaktoran",
+                q: "Penyelesaian dari persamaan kuadrat $2x^2 + 7x - 15 = 0$ adalah...",
+                opts: ["$x = 5$ dan $x = -\\frac{3}{2}$", "$x = -5$ dan $x = \\frac{3}{2}$", "$x = -3$ dan $x = \\frac{5}{2}$", "$x = 3$ dan $x = -\\frac{5}{2}$"],
+                ans: 1,
+                exp: "Gunakan faktorisasi $a \\cdot c = 2 \\cdot (-15) = -30$. Pasangan angka dijumlah $7$ dan dikali $-30$ adalah $10$ dan $-3$. Pemfaktoran: $\\frac{(2x + 10)(2x - 3)}{2} = (x + 5)(2x - 3) = 0 \\implies x = -5$ atau $x = \\frac{3}{2}$."
+            },
+            {
+                id: 3,
+                category: "Pemfaktoran",
+                q: "Akar-akar dari $5x^2 - 18x - 8 = 0$ adalah...",
+                opts: ["$x = 4$ dan $x = -\\frac{2}{5}$", "$x = -4$ dan $x = \\frac{2}{5}$", "$x = 2$ dan $x = -\\frac{4}{5}$", "$x = -2$ dan $x = \\frac{4}{5}$"],
+                ans: 0,
+                exp: "Faktorisasi: $\\frac{(5x - 20)(5x + 2)}{5} = (x - 4)(5x + 2) = 0 \\implies x = 4$ atau $x = -\\frac{2}{5}$."
+            },
+            {
+                id: 4,
+                category: "Pemfaktoran",
+                q: "Himpunan penyelesaian dari $9x^2 - 49 = 0$ adalah...",
+                opts: ["$\\{\\pm \\frac{49}{9}\\}$", "$\\{\\pm \\frac{7}{9}\\}$", "$\\{\\pm \\frac{3}{7}\\}$", "$\\{\\pm \\frac{7}{3}\\}$"],
+                ans: 3,
+                exp: "Gunakan rumusan selisih dua kuadrat $(a^2 - b^2) = (a - b)(a + b)$. Bentuk $(3x)^2 - 7^2 = (3x - 7)(3x + 7) = 0 \\implies x = \\pm \\frac{7}{3}$."
+            },
+            {
+                id: 5,
+                category: "Pemfaktoran",
+                q: "Menggunakan Rumus ABC, akar-akar dari $x^2 - 8x + 11 = 0$ adalah...",
+                opts: ["$4 \\pm 2\\sqrt{5}$", "$8 \\pm \\sqrt{5}$", "$2 \\pm \\sqrt{5}$", "$4 \\pm \\sqrt{5}$"],
+                ans: 3,
+                exp: "Gunakan $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$ dengan $a=1, b=-8, c=11$: $x = \\frac{8 \\pm \\sqrt{64 - 44}}{2} = \\frac{8 \\pm \\sqrt{20}}{2} = \\frac{8 \\pm 2\\sqrt{5}}{2} = 4 \\pm \\sqrt{5}$."
+            },
+            {
+                id: 6,
+                category: "Pemfaktoran",
+                q: "Penyelesaian dari persamaan kuadrat $2x^2 - 6x + 1 = 0$ adalah...",
+                opts: ["$\\frac{3 \\pm \\sqrt{7}}{2}$", "$\\frac{6 \\pm \\sqrt{7}}{2}$", "$\\frac{3 \\pm \\sqrt{14}}{2}$", "$3 \\pm \\sqrt{7}$"],
+                ans: 0,
+                exp: "$x = \\frac{-(-6) \\pm \\sqrt{(-6)^2 - 4(2)(1)}}{2(2)} = \\frac{6 \\pm \\sqrt{36 - 8}}{4} = \\frac{6 \\pm \\sqrt{28}}{4} = \\frac{6 \\pm 2\\sqrt{7}}{4} = \\frac{3 \\pm \\sqrt{7}}{2}$."
+            },
+            {
+                id: 7,
+                category: "Pemfaktoran",
+                q: "Dengan melengkapkan kuadrat sempurna, bentuk $x^2 - 10x + 18 = 0$ dapat dinyatakan sebagai...",
+                opts: ["$(x - 5)^2 = 18$", "$(x - 5)^2 = 7$", "$(x - 10)^2 = 7$", "$(x + 5)^2 = 7$"],
+                ans: 1,
+                exp: "$x^2 - 10x = -18 \\implies (x - 5)^2 - 25 = -18 \\implies (x - 5)^2 = -18 + 25 = 7$."
+            },
+            {
+                id: 8,
+                category: "Pemfaktoran",
+                q: "Jika salah satu akar dari $x^2 + kx - 24 = 0$ adalah $x = 3$, maka nilai $k$ dan akar yang lain berturut-turut adalah...",
+                opts: ["$k = -5$ dan $x = 8$", "$k = 2$ dan $x = -12$", "$k = 5$ dan $x = -8$", "$k = -2$ dan $x = 12$"],
+                ans: 2,
+                exp: "Substitusi $x = 3 \\implies 3^2 + 3k - 24 = 0 \\implies 3k = 15 \\implies k = 5$. Persamaan: $x^2 + 5x - 24 = (x - 3)(x + 8) = 0$. Akar lainnya adalah $x = -8$."
+            },
+
+            // --- KATEGORI 2: DISKRIMINAN & SIFAT AKAR (9-16) ---
+            {
+                id: 9,
+                category: "Diskriminan",
+                q: "Nilai diskriminan dari persamaan kuadrat $3x^2 - 7x + 2 = 0$ adalah...",
+                opts: ["$25$", "$73$", "$23$", "$49$"],
+                ans: 0,
+                exp: "$D = b^2 - 4ac = (-7)^2 - 4(3)(2) = 49 - 24 = 25$."
+            },
+            {
+                id: 10,
+                category: "Diskriminan",
+                q: "Jenis akar dari persamaan kuadrat $4x^2 - 12x + 9 = 0$ adalah...",
+                opts: ["Dua akar real berbeda", "Dua akar real kembar (sama)", "Dua akar imajiner (tidak real)", "Satu akar real dan satu imajiner"],
+                ans: 1,
+                exp: "$D = (-12)^2 - 4(4)(9) = 144 - 144 = 0$. Karena $D = 0$, persamaan memiliki 2 akar real kembar."
+            },
+            {
+                id: 11,
+                category: "Diskriminan",
+                q: "Agar persamaan kuadrat $x^2 + (m+2)x + 16 = 0$ memiliki akar kembar, nilai $m$ yang memenuhi adalah...",
+                opts: ["$m = 8$ atau $m = -8$", "$m = 4$ atau $m = -4$", "$m = 10$ atau $m = -6$", "$m = 6$ atau $m = -10$"],
+                ans: 3,
+                exp: "Syarat akar kembar $D = 0 \\implies (m+2)^2 - 4(1)(16) = 0 \\implies (m+2)^2 = 64 \\implies m+2 = \\pm 8$. Jadi $m = 6$ atau $m = -10$."
+            },
+            {
+                id: 12,
+                category: "Diskriminan",
+                q: "Jika grafik fungsi kuadrat $f(x) = x^2 - 6x + c$ memotong sumbu-X di dua titik berbeda, batas nilai $c$ adalah...",
+                opts: ["$c > 9$", "$c \\le 9$", "$c < 9$", "$c < -9$"],
+                ans: 2,
+                exp: "Syarat memotong sumbu-X di dua titik adalah $D > 0 \\implies (-6)^2 - 4(1)(c) > 0 \\implies 36 - 4c > 0 \\implies 4c < 36 \\implies c < 9$."
+            },
+            {
+                id: 13,
+                category: "Diskriminan",
+                q: "Fungsi kuadrat $f(x) = 2x^2 - 4x + (k+1)$ bernilai definit positif. Batas nilai $k$ adalah...",
+                opts: ["$k > 1$", "$k < 1$", "$k > 3$", "$k < 3$"],
+                ans: 0,
+                exp: "Syarat definit positif: $a > 0$ (sudah $2 > 0$) dan $D < 0 \\implies (-4)^2 - 4(2)(k+1) < 0 \\implies 16 - 8k - 8 < 0 \\implies 8k > 8 \\implies k > 1$."
+            },
+            {
+                id: 14,
+                category: "Diskriminan",
+                q: "Fungsi $f(x) = -x^2 + 4x - (p+3)$ selalu bernilai negatif (definit negatif) untuk seluruh $x \\in \\mathbb{R}$. Nilai $p$ yang memenuhi adalah...",
+                opts: ["$p < 1$", "$p > 1$", "$p > -1$", "$p < -1$"],
+                ans: 1,
+                exp: "Definit negatif: $a < 0$ (sudah $-1 < 0$) dan $D < 0 \\implies 4^2 - 4(-1)(-(p+3)) < 0 \\implies 16 - 4(p+3) < 0 \\implies 16 - 4p - 12 < 0 \\implies 4p > 4 \\implies p > 1$."
+            },
+            {
+                id: 15,
+                category: "Diskriminan",
+                q: "Persamaan $x^2 - (a+1)x + 4 = 0$ mempunyai dua akar real dan berbeda. Batas nilai $a$ adalah...",
+                opts: ["$-5 < a < 3$", "$-3 < a < 5$", "$a < -5$ atau $a > 3$", "$a < -3$ atau $a > 5$"],
+                ans: 2,
+                exp: "$D > 0 \\implies (a+1)^2 - 4(1)(4) > 0 \\implies (a+1)^2 - 16 > 0 \\implies (a+1-4)(a+1+4) > 0 \\implies (a-3)(a+5) > 0$. Jadi $a < -5$ atau $a > 3$."
+            },
+            {
+                id: 16,
+                category: "Diskriminan",
+                q: "Persamaan kuadrat $2x^2 - 3x + 5 = 0$ memiliki akar-akar $x_1$ dan $x_2$. Pernyataan yang benar mengenai jenis akar adalah...",
+                opts: ["Akar-akarnya rasional dan berbeda", "Akar-akarnya irasional dan berbeda", "Akar-akarnya kembar", "Akar-akarnya imajiner (tidak real)"],
+                ans: 3,
+                exp: "Hitung diskriminan $D = (-3)^2 - 4(2)(5) = 9 - 40 = -31 < 0$. Karena $D < 0$, akar-akarnya imajiner (tidak real)."
+            },
+
+            // --- KATEGORI 3: TEOREMA VIETA & OPERASI AKAR (17-26) ---
+            {
+                id: 17,
+                category: "Vieta",
+                q: "Jika $x_1$ dan $x_2$ adalah akar-akar dari $3x^2 - 12x + 7 = 0$, maka $x_1 + x_2$ dan $x_1 \\cdot x_2$ berturut-turut adalah...",
+                opts: ["$4$ dan $\\frac{7}{3}$", "$-4$ dan $\\frac{7}{3}$", "$12$ dan $7$", "$-12$ dan $-7$"],
+                ans: 0,
+                exp: "Teorema Vieta: $x_1 + x_2 = -\\frac{b}{a} = -\\frac{-12}{3} = 4$ dan $x_1 \\cdot x_2 = \\frac{c}{a} = \\frac{7}{3}$."
+            },
+            {
+                id: 18,
+                category: "Vieta",
+                q: "Akar-akar persamaan $x^2 - 8x + 12 = 0$ adalah $x_1$ dan $x_2$. Nilai dari $x_1^2 + x_2^2$ adalah...",
+                opts: ["$52$", "$40$", "$64$", "$28$"],
+                ans: 1,
+                exp: "$x_1 + x_2 = 8$, $x_1 x_2 = 12$. Identitas kuadrat: $x_1^2 + x_2^2 = (x_1 + x_2)^2 - 2x_1 x_2 = 8^2 - 2(12) = 64 - 24 = 40$."
+            },
+            {
+                id: 19,
+                category: "Vieta",
+                q: "Jika $x_1$ dan $x_2$ merupakan akar-akar dari $2x^2 + 8x - 5 = 0$, nilai dari $\\frac{1}{x_1} + \\frac{1}{x_2}$ adalah...",
+                opts: ["$-\\frac{8}{5}$", "$\\frac{5}{8}$", "$\\frac{8}{5}$", "$-\\frac{5}{8}$"],
+                ans: 2,
+                exp: "$\\frac{1}{x_1} + \\frac{1}{x_2} = \\frac{x_1 + x_2}{x_1 x_2} = \\frac{-b/a}{c/a} = -\\frac{b}{c} = -\\frac{8}{-5} = \\frac{8}{5}$."
+            },
+            {
+                id: 20,
+                category: "Vieta",
+                q: "Akar-akar $x^2 - 5x + 2 = 0$ adalah $x_1$ dan $x_2$. Nilai dari $\\frac{x_1}{x_2} + \\frac{x_2}{x_1}$ adalah...",
+                opts: ["$\\frac{25}{2}$", "$\\frac{29}{2}$", "$\\frac{19}{2}$", "$\\frac{21}{2}$"],
+                ans: 3,
+                exp: "$\\frac{x_1}{x_2} + \\frac{x_2}{x_1} = \\frac{x_1^2 + x_2^2}{x_1 x_2} = \\frac{(x_1+x_2)^2 - 2x_1 x_2}{x_1 x_2} = \\frac{5^2 - 2(2)}{2} = \\frac{25 - 4}{2} = \\frac{21}{2}$."
+            },
+            {
+                id: 21,
+                category: "Vieta",
+                q: "Jika $\\alpha$ dan $\\beta$ adalah akar-akar dari $x^2 - 4x + 2 = 0$, maka nilai dari $\\alpha^3 + \\beta^3$ adalah...",
+                opts: ["$40$", "$56$", "$64$", "$32$"],
+                ans: 0,
+                exp: "$\\alpha+\\beta = 4, \\alpha\\beta = 2$. Gunakan rumus pangkat tiga: $\\alpha^3 + \\beta^3 = (\\alpha+\\beta)^3 - 3\\alpha\\beta(\\alpha+\\beta) = 4^3 - 3(2)(4) = 64 - 24 = 40$."
+            },
+            {
+                id: 22,
+                category: "Vieta",
+                q: "Jika $x_1$ dan $x_2$ adalah akar-akar dari $x^2 - 10x + 21 = 0$, nilai dari $(x_1 - x_2)^2$ adalah...",
+                opts: ["$4$", "$16$", "$25$", "$100$"],
+                ans: 1,
+                exp: "$(x_1 - x_2)^2 = (x_1 + x_2)^2 - 4x_1 x_2 = 10^2 - 4(21) = 100 - 84 = 16$."
+            },
+            {
+                id: 23,
+                category: "Vieta",
+                q: "Diketahui selisih akar-akar dari persamaan kuadrat $x^2 - 6x + m = 0$ adalah $4$. Nilai $m$ adalah...",
+                opts: ["$9$", "$8$", "$5$", "$4$"],
+                ans: 2,
+                exp: "Rumus selisih akar: $|x_1 - x_2| = \\frac{\\sqrt{D}}{|a|} \\implies 4 = \\frac{\\sqrt{(-6)^2 - 4(1)(m)}}{1} \\implies 4 = \\sqrt{36 - 4m} \\implies 16 = 36 - 4m \\implies 4m = 20 \\implies m = 5$."
+            },
+            {
+                id: 24,
+                category: "Vieta",
+                q: "Persamaan $3x^2 + (2p-8)x - 12 = 0$ mempunyai akar-akar yang saling berlawanan ($x_1 = -x_2$). Nilai $p$ adalah...",
+                opts: ["$p = -4$", "$p = 2$", "$p = 0$", "$p = 4$"],
+                ans: 3,
+                exp: "Akar saling berlawanan berarti $x_1 + x_2 = 0 \\implies -\\frac{b}{a} = 0 \\implies b = 0 \\implies 2p - 8 = 0 \\implies p = 4$."
+            },
+            {
+                id: 25,
+                category: "Vieta",
+                q: "Persamaan kuadrat $(k-1)x^2 + 5x + (2k-7) = 0$ memiliki akar-akar yang saling berkebalikan ($x_1 = \\frac{1}{x_2}$). Nilai $k$ yang memenuhi adalah...",
+                opts: ["$k = 6$", "$k = -6$", "$k = 3$", "$k = 8$"],
+                ans: 0,
+                exp: "Akar berkebalikan berarti $x_1 \\cdot x_2 = 1 \\implies \\frac{c}{a} = 1 \\implies 2k - 7 = k - 1 \\implies k = 6$."
+            },
+            {
+                id: 26,
+                category: "Vieta",
+                q: "Salah satu akar persamaan $x^2 - 9x + c = 0$ adalah dua kali akar yang lain ($x_2 = 2x_1$). Nilai $c$ adalah...",
+                opts: ["$14$", "$18$", "$20$", "$81$"],
+                ans: 1,
+                exp: "$x_1 + x_2 = 9 \\implies x_1 + 2x_1 = 9 \\implies 3x_1 = 9 \\implies x_1 = 3$. Maka $x_2 = 6$. Hasil kali akar $c = x_1 \\cdot x_2 = 3 \\cdot 6 = 18$."
+            },
+
+            // --- KATEGORI 4: MENYUSUN PERSAMAAN KUADRAT BARU (27-32) ---
+            {
+                id: 27,
+                category: "Persamaan Baru",
+                q: "Persamaan kuadrat baru yang akar-akarnya $5$ dan $-3$ adalah...",
+                opts: ["$x^2 + 2x - 15 = 0$", "$x^2 - 8x - 15 = 0$", "$x^2 - 2x - 15 = 0$", "$x^2 + 8x + 15 = 0$"],
+                ans: 2,
+                exp: "Jumlah akar $= 5 + (-3) = 2$. Hasil kali $= 5 \\times (-3) = -15$. Bentuk PK: $x^2 - (2)x + (-15) = 0 \\implies x^2 - 2x - 15 = 0$."
+            },
+            {
+                id: 28,
+                category: "Persamaan Baru",
+                q: "Jika $x_1$ dan $x_2$ adalah akar-akar dari $x^2 - 4x + 1 = 0$, persamaan kuadrat baru yang akar-akarnya $(x_1 + 3)$ dan $(x_2 + 3)$ adalah...",
+                opts: ["$x^2 - 10x + 16 = 0$", "$x^2 - 4x + 22 = 0$", "$x^2 + 10x + 22 = 0$", "$x^2 - 10x + 22 = 0$"],
+                ans: 3,
+                exp: "Misal $y = x + 3 \\implies x = y - 3$. Substitusi ke persamaan lama: $(y - 3)^2 - 4(y - 3) + 1 = 0 \\implies y^2 - 6y + 9 - 4y + 12 + 1 = 0 \\implies y^2 - 10y + 22 = 0$."
+            },
+            {
+                id: 29,
+                category: "Persamaan Baru",
+                q: "Akar-akar $x^2 - 3x + 5 = 0$ adalah $x_1$ dan $x_2$. Persamaan kuadrat baru yang akar-akarnya $(2x_1)$ dan $(2x_2)$ adalah...",
+                opts: ["$x^2 - 6x + 20 = 0$", "$x^2 - 6x + 10 = 0$", "$x^2 - 12x + 20 = 0$", "$x^2 - 3x + 20 = 0$"],
+                ans: 0,
+                exp: "Misal $y = 2x \\implies x = \\frac{y}{2}$. Substitusi: $(\\frac{y}{2})^2 - 3(\\frac{y}{2}) + 5 = 0 \\implies \\frac{y^2}{4} - \\frac{3y}{2} + 5 = 0$. Kalikan $4$: $y^2 - 6y + 20 = 0$."
+            },
+            {
+                id: 30,
+                category: "Persamaan Baru",
+                q: "Persamaan kuadrat baru yang akar-akarnya kebalikan (yaitu $\\frac{1}{x_1}$ dan $\\frac{1}{x_2}$) dari akar-akar $2x^2 - 5x + 3 = 0$ adalah...",
+                opts: ["$3x^2 + 5x - 2 = 0$", "$3x^2 - 5x + 2 = 0$", "$2x^2 + 5x + 3 = 0$", "$2x^2 - 3x + 5 = 0$"],
+                ans: 1,
+                exp: "Untuk akar berkebalikan $\\frac{1}{x}$, balikkan koefisien $ax^2 + bx + c = 0$ menjadi $cx^2 + bx + a = 0$. Maka $3x^2 - 5x + 2 = 0$."
+            },
+            {
+                id: 31,
+                category: "Persamaan Baru",
+                q: "Jika $x_1$ dan $x_2$ merupakan akar-akar dari $x^2 - 3x + 1 = 0$, persamaan kuadrat baru yang akar-akarnya $(x_1^2)$ dan $(x_2^2)$ adalah...",
+                opts: ["$x^2 - 9x + 1 = 0$", "$x^2 - 7x + 9 = 0$", "$x^2 - 7x + 1 = 0$", "$x^2 - 11x + 1 = 0$"],
+                ans: 2,
+                exp: "Jumlah akar baru $y_1 + y_2 = x_1^2 + x_2^2 = (x_1+x_2)^2 - 2x_1 x_2 = 3^2 - 2(1) = 7$. Hasil kali $y_1 y_2 = (x_1 x_2)^2 = 1^2 = 1$. Persamaan: $x^2 - 7x + 1 = 0$."
+            },
+            {
+                id: 32,
+                category: "Persamaan Baru",
+                q: "Jika $x_1$ dan $x_2$ adalah akar-akar dari $x^2 - 6x + 3 = 0$, nilai dari $\\frac{1}{x_1^2} + \\frac{1}{x_2^2}$ adalah...",
+                opts: ["$\\frac{30}{9}$", "$\\frac{11}{3}$", "$\\frac{8}{3}$", "$\\frac{10}{3}$"],
+                ans: 3,
+                exp: "$\\frac{1}{x_1^2} + \\frac{1}{x_2^2} = \\frac{x_1^2 + x_2^2}{(x_1 x_2)^2} = \\frac{(x_1+x_2)^2 - 2x_1 x_2}{(x_1 x_2)^2} = \\frac{6^2 - 2(3)}{3^2} = \\frac{36 - 6}{9} = \\frac{30}{9} = \\frac{10}{3}$."
+            },
+
+            // --- KATEGORI 5: APLIKASI SOAL CERITA, FISIKA & HOTS (33-40) ---
+            {
+                id: 33,
+                category: "Aplikasi",
+                q: "Dua bilangan asli berselisih $6$ dan hasil kalinya $160$. Jumlah kedua bilangan tersebut adalah...",
+                opts: ["$26$", "$28$", "$24$", "$30$"],
+                ans: 0,
+                exp: "Misal bilangan $x$ dan $x+6$. $x(x+6) = 160 \\implies x^2 + 6x - 160 = 0 \\implies (x+16)(x-10) = 0$. Karena bilangan asli, $x = 10$. Bilangan tersebut $10$ dan $16$. Jumlahnya $= 10 + 16 = 26$."
+            },
+            {
+                id: 34,
+                category: "Aplikasi",
+                q: "Sebuah lapangan persegi panjang berluas $120\\text{ m}^2$ dan keliling $46\\text{ m}$. Panjang diagonal lapangan tersebut adalah...",
+                opts: ["$15\\text{ m}$", "$17\\text{ m}$", "$13\\text{ m}$", "$20\\text{ m}$"],
+                ans: 1,
+                exp: "Keliling $2(p+l) = 46 \\implies p+l = 23 \\implies l = 23-p$. Luas $p \\cdot l = 120 \\implies p(23-p) = 120 \\implies p^2 - 23p + 120 = 0 \\implies (p-15)(p-8) = 0$. Jadi $p = 15$ dan $l = 8$. Diagonal $=\\sqrt{15^2 + 8^2} = \\sqrt{225 + 64} = \\sqrt{289} = 17\\text{ m}$."
+            },
+            {
+                id: 35,
+                category: "Aplikasi",
+                q: "Sebuah benda dilempar vertikal ke atas dengan persamaan ketinggian $h(t) = 40t - 5t^2$ (meter, $t$ dalam detik). Ketinggian $75\\text{ meter}$ dicapai pada saat $t = \\dots$",
+                opts: ["$t = 2$ detik dan $t = 6$ detik", "$t = 3$ detik saja", "$t = 3$ detik dan $t = 5$ detik", "$t = 5$ detik saja"],
+                ans: 2,
+                exp: "$40t - 5t^2 = 75 \\implies 5t^2 - 40t + 75 = 0 \\implies t^2 - 8t + 15 = 0 \\implies (t - 3)(t - 5) = 0$. Ketinggian $75\\text{ m}$ dicapai saat naik ($t = 3$ detik) dan saat turun ($t = 5$ detik)."
+            },
+            {
+                id: 36,
+                category: "Aplikasi",
+                q: "Tinggi sebuah peluru yang ditembakkan dinyatakan oleh $h(t) = -4t^2 + 32t + 10$ meter. Tinggi maksimum yang dapat dicapai peluru tersebut adalah...",
+                opts: ["$64\\text{ meter}$", "$80\\text{ meter}$", "$70\\text{ meter}$", "$74\\text{ meter}$"],
+                ans: 3,
+                exp: "Waktu puncak $t_p = -\\frac{b}{2a} = -\\frac{32}{2(-4)} = 4$ detik. Height puncak $h(4) = -4(4)^2 + 32(4) + 10 = -64 + 128 + 10 = 74\\text{ meter}$."
+            },
+            {
+                id: 37,
+                category: "Aplikasi",
+                q: "Panjang sisi-sisi tegak segitiga siku-siku adalah $(x-2)\\text{ cm}$ dan $(x+5)\\text{ cm}$, sedangkan panjang hipotenusanya adalah $(x+7)\\text{ cm}$. Nilai $x$ adalah...",
+                opts: ["$10\\text{ cm}$", "$8\\text{ cm}$", "$12\\text{ cm}$", "$6\\text{ cm}$"],
+                ans: 0,
+                exp: "Teorema Pythagoras: $(x-2)^2 + (x+5)^2 = (x+7)^2 \\implies (x^2 - 4x + 4) + (x^2 + 10x + 25) = x^2 + 14x + 49 \\implies 2x^2 + 6x + 29 = x^2 + 14x + 49 \\implies x^2 - 8x - 20 = 0 \\implies (x - 10)(x + 2) = 0 \\implies x = 10\\text{ cm}$."
+            },
+            {
+                id: 38,
+                category: "Aplikasi",
+                q: "Kebun berukuran $20\\text{ m} \\times 12\\text{ m}$ dikelilingi jalan selebar $x\\text{ m}$ di bagian dalam kebun. Jika luas jalan tersebut adalah $112\\text{ m}^2$, lebar jalan $x$ adalah...",
+                opts: ["$3\\text{ m}$", "$2\\text{ m}$", "$1.5\\text{ m}$", "$4\\text{ m}$"],
+                ans: 1,
+                exp: "Luas total kebun $= 20 \\times 12 = 240\\text{ m}^2$. Luas bagian dalam sisa $240 - 112 = 128\\text{ m}^2$. Dimensi dalam: $(20 - 2x)(12 - 2x) = 128 \\implies 240 - 64x + 4x^2 = 128 \\implies 4x^2 - 64x + 112 = 0 \\implies x^2 - 16x + 28 = 0 \\implies (x - 2)(x - 14) = 0$. Karena $x < 6$, diambil $x = 2\\text{ m}$."
+            },
+            {
+                id: 39,
+                category: "Aplikasi",
+                q: "Akar-akar $x^2 - px + q = 0$ adalah $\\alpha$ dan $\\beta$. Jika $\\alpha^2 + \\beta^2 = 29$ dan $\\alpha \\cdot \\beta = 10$, dengan $p > 0$, maka nilai $p$ adalah...",
+                opts: ["$9$", "$5$", "$7$", "$\\sqrt{29}$"],
+                ans: 2,
+                exp: "$\\alpha^2 + \\beta^2 = (\\alpha+\\beta)^2 - 2\\alpha\\beta = p^2 - 2q = 29$. Karena $q = 10 \\implies p^2 - 20 = 29 \\implies p^2 = 49$. Karena $p > 0$, maka $p = 7$."
+            },
+            {
+                id: 40,
+                category: "Aplikasi",
+                q: "Diberikan persamaan kuadrat $x^2 - (k+1)x + (k+4) = 0$ dengan akar-akar $x_1$ dan $x_2$. Nilai minimum dari jumlah kuadrat akar-akar $(x_1^2 + x_2^2)$ dicapai saat $k = \\dots$",
+                opts: ["$1$", "$-1$", "$2$", "$0$"],
+                ans: 3,
+                exp: "$x_1^2 + x_2^2 = (x_1+x_2)^2 - 2x_1 x_2 = (k+1)^2 - 2(k+4) = k^2 + 2k + 1 - 2k - 8 = k^2 - 7$. Fungsi $f(k) = k^2 - 7$ mencapai nilai minimum saat $k = 0$ (karena $k^2 \\ge 0$)."
+            }
+        ];
+
+        // =========================================================================
+        // STATE MANAGEMENT & LOCAL STORAGE
+        // =========================================================================
+        const STORAGE_KEY = "persamaan_kuadrat_quiz_40_state_v1";
+
+        let currentQIndex = 0;
+        let activeCategoryFilter = "ALL";
+        let userAnswers = {}; // { questionOriginalIndex: selectedOptIndex }
+        let filteredIndices = []; // Maps current display list to original indices in quizQuestions
+
+        function loadSavedState() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    userAnswers = parsed.userAnswers || {};
+                    currentQIndex = parsed.currentQIndex || 0;
+                } catch(e) {
+                    console.error("Gagal memuat histori tersimpan", e);
+                }
+            }
+        }
+
+        function saveState() {
+            const state = {
+                userAnswers: userAnswers,
+                currentQIndex: currentQIndex
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        }
+
+        function renderMath() {
+            if (window.renderMathInElement) {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false},
+                        {left: '\\[', right: '\\]', display: true}
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
+
+        // Apply Category Filters
+        function updateFilteredIndices() {
+            filteredIndices = [];
+            quizQuestions.forEach((q, idx) => {
+                if (activeCategoryFilter === "ALL" || q.category === activeCategoryFilter) {
+                    filteredIndices.push(idx);
+                }
+            });
+
+            // Ensure current index stays valid
+            if (currentQIndex >= filteredIndices.length) {
+                currentQIndex = 0;
+            }
+        }
+
+        function filterCategory(cat) {
+            activeCategoryFilter = cat;
+            
+            // Update UI Button Styles
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.className = "filter-btn bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-1.5 rounded-xl transition shrink-0";
+            });
+            const activeBtn = document.getElementById(`filter-btn-${cat}`);
+            if (activeBtn) {
+                activeBtn.className = "filter-btn active bg-indigo-600 text-white px-3.5 py-1.5 rounded-xl transition shrink-0 shadow-sm";
+            }
+
+            // Update Label
+            const countLabel = document.getElementById('category-count-label');
+            if (cat === "ALL") {
+                countLabel.innerText = "Semua (40 Soal)";
+            } else {
+                countLabel.innerText = `${cat} (${filteredIndices.length} Soal)`;
+            }
+
+            updateFilteredIndices();
+            renderQuestion();
+            renderPaletteGrids();
+            updateProgressStats();
+        }
+
+        // =========================================================================
+        // RENDER LOGIC
+        // =========================================================================
+        function initQuiz() {
+            loadSavedState();
+            updateFilteredIndices();
+            renderQuestion();
+            renderPaletteGrids();
+            updateProgressStats();
+        }
+
+        function renderQuestion() {
+            if (filteredIndices.length === 0) return;
+
+            const realIndex = filteredIndices[currentQIndex];
+            const q = quizQuestions[realIndex];
+
+            // Header Badges & Counters
+            document.getElementById('q-number-badge').innerText = `Soal #${realIndex + 1}`;
+            document.getElementById('q-category-badge').innerText = q.category;
+            document.getElementById('nav-counter').innerText = `${currentQIndex + 1} / ${filteredIndices.length}`;
+
+            // Question Text
+            document.getElementById('q-text').innerHTML = `${realIndex + 1}. ${q.q}`;
+
+            // Answered Status Check
+            const hasAnswered = userAnswers.hasOwnProperty(realIndex);
+            const selectedOpt = hasAnswered ? userAnswers[realIndex] : null;
+
+            // Status Badge UI
+            const statusBadge = document.getElementById('q-status-badge');
+            if (hasAnswered) {
+                if (selectedOpt === q.ans) {
+                    statusBadge.className = "text-xs font-bold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-lg border border-emerald-200";
+                    statusBadge.innerText = "✓ Benar";
+                } else {
+                    statusBadge.className = "text-xs font-bold text-rose-700 bg-rose-100 px-2.5 py-1 rounded-lg border border-rose-200";
+                    statusBadge.innerText = "✗ Salah";
+                }
+            } else {
+                statusBadge.className = "text-xs font-bold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-lg";
+                statusBadge.innerText = "Belum Dijawab";
+            }
+
+            // Options Rendering
+            const optionsContainer = document.getElementById('q-options');
+            optionsContainer.innerHTML = '';
+
+            const optionLabels = ["A", "B", "C", "D"];
+
+            q.opts.forEach((optText, optIdx) => {
+                const btn = document.createElement('button');
+                btn.disabled = hasAnswered; // Disable after answered
+
+                let borderClass = "border-slate-200 bg-white hover:bg-indigo-50/70 hover:border-indigo-300 text-slate-800";
+                let labelBg = "bg-slate-100 text-slate-600";
+
+                if (hasAnswered) {
+                    if (optIdx === q.ans) {
+                        // Correct Answer Style
+                        borderClass = "border-2 border-emerald-500 bg-emerald-50 text-emerald-950 font-bold shadow-sm";
+                        labelBg = "bg-emerald-600 text-white font-black";
+                    } else if (optIdx === selectedOpt) {
+                        // Wrong Choice Style
+                        borderClass = "border-2 border-rose-500 bg-rose-50 text-rose-950 font-bold shadow-sm";
+                        labelBg = "bg-rose-600 text-white font-black";
+                    } else {
+                        // Neutral Option
+                        borderClass = "border-slate-200 bg-slate-50/50 text-slate-400 opacity-60";
+                        labelBg = "bg-slate-200 text-slate-400";
+                    }
+                }
+
+                btn.className = `w-full text-left p-4 rounded-2xl border transition-all flex items-center space-x-3 text-xs sm:text-sm font-medium active:scale-[0.99] ${borderClass}`;
+                btn.onclick = () => selectAnswer(realIndex, optIdx);
+
+                btn.innerHTML = `
+                    <span class="w-7 h-7 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 ${labelBg}">${optionLabels[optIdx]}</span>
+                    <span class="flex-grow">${optText}</span>
+                `;
+
+                optionsContainer.appendChild(btn);
+            });
+
+            // Rationale / Explanation Box
+            const rationaleBox = document.getElementById('q-rationale');
+            if (hasAnswered) {
+                rationaleBox.classList.remove('hidden');
+                if (selectedOpt === q.ans) {
+                    rationaleBox.className = "p-5 rounded-2xl border bg-emerald-50/80 border-emerald-200 text-emerald-950 text-xs sm:text-sm space-y-1 block animate-fadeIn";
+                    rationaleBox.innerHTML = `
+                        <div class="font-bold text-emerald-900 text-sm flex items-center space-x-1">
+                            <span>✓ Jawaban Kamu Tepat Sekali!</span>
+                        </div>
+                        <div class="text-slate-700 mt-1"><strong>Pembahasan:</strong> ${q.exp}</div>
+                    `;
+                } else {
+                    rationaleBox.className = "p-5 rounded-2xl border bg-rose-50/80 border-rose-200 text-rose-950 text-xs sm:text-sm space-y-1 block animate-fadeIn";
+                    rationaleBox.innerHTML = `
+                        <div class="font-bold text-rose-900 text-sm flex items-center space-x-1">
+                            <span>✗ Jawaban Kurang Tepat</span>
+                        </div>
+                        <div class="text-slate-700 mt-1"><strong>Pembahasan Lengkap:</strong> ${q.exp}</div>
+                    `;
+                }
+            } else {
+                rationaleBox.classList.add('hidden');
+            }
+
+            // Prev/Next Button states
+            document.getElementById('btn-prev').disabled = currentQIndex === 0;
+            document.getElementById('btn-prev').style.opacity = currentQIndex === 0 ? "0.4" : "1";
+            
+            document.getElementById('btn-next').disabled = currentQIndex === filteredIndices.length - 1;
+            document.getElementById('btn-next').style.opacity = currentQIndex === filteredIndices.length - 1 ? "0.4" : "1";
+
+            renderMath();
+        }
+
+        function selectAnswer(realIdx, optIdx) {
+            if (userAnswers.hasOwnProperty(realIdx)) return;
+
+            userAnswers[realIdx] = optIdx;
+            saveState();
+
+            renderQuestion();
+            renderPaletteGrids();
+            updateProgressStats();
+        }
+
+        function nextQuestion() {
+            if (currentQIndex < filteredIndices.length - 1) {
+                currentQIndex++;
+                saveState();
+                renderQuestion();
+                renderPaletteGrids();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQIndex > 0) {
+                currentQIndex--;
+                saveState();
+                renderQuestion();
+                renderPaletteGrids();
+            }
+        }
+
+        function jumpToQuestion(filteredIdx) {
+            currentQIndex = filteredIdx;
+            saveState();
+            renderQuestion();
+            renderPaletteGrids();
+            document.getElementById('grid-modal').classList.add('hidden');
+        }
+
+        // Render Sidebar Navigation Palette
+        function renderPaletteGrids() {
+            const gridDesktop = document.getElementById('numbers-grid');
+            const gridModal = document.getElementById('modal-numbers-grid');
+
+            let gridHTML = '';
+
+            filteredIndices.forEach((realIdx, filterPos) => {
+                const q = quizQuestions[realIdx];
+                const hasAnswered = userAnswers.hasOwnProperty(realIdx);
+                const isCurrent = filterPos === currentQIndex;
+
+                let btnStyle = "bg-white text-slate-700 border-slate-200 hover:border-indigo-400 hover:bg-indigo-50";
+                
+                if (hasAnswered) {
+                    const isCorrect = userAnswers[realIdx] === q.ans;
+                    if (isCorrect) {
+                        btnStyle = "bg-emerald-500 text-white font-extrabold border-emerald-600 shadow-sm";
+                    } else {
+                        btnStyle = "bg-rose-500 text-white font-extrabold border-rose-600 shadow-sm";
+                    }
+                }
+
+                if (isCurrent) {
+                    btnStyle += " ring-2 ring-indigo-600 ring-offset-2";
+                }
+
+                gridHTML += `
+                    <button onclick="jumpToQuestion(${filterPos})" class="h-10 rounded-xl border text-xs font-bold transition flex items-center justify-center ${btnStyle}">
+                        ${realIdx + 1}
+                    </button>
+                `;
+            });
+
+            gridDesktop.innerHTML = gridHTML;
+            gridModal.innerHTML = gridHTML;
+        }
+
+        // Calculate and Update Progress Statistics
+        function updateProgressStats() {
+            const answeredCount = Object.keys(userAnswers).length;
+            const totalQuestions = quizQuestions.length;
+
+            let score = 0;
+            Object.keys(userAnswers).forEach(realIdx => {
+                if (userAnswers[realIdx] === quizQuestions[realIdx].ans) {
+                    score++;
+                }
+            });
+
+            // Update Header & Progress Bar
+            const percent = Math.round((answeredCount / totalQuestions) * 100);
+            document.getElementById('progress-bar').style.width = `${percent}%`;
+            document.getElementById('progress-text').innerText = `${answeredCount} dari ${totalQuestions} Soal`;
+            document.getElementById('progress-percent').innerText = `${percent}%`;
+            document.getElementById('header-score').innerText = `${score} / ${totalQuestions}`;
+        }
+
+        // =========================================================================
+        // MODALS & ACTIONS
+        // =========================================================================
+        function toggleGridModal() {
+            const modal = document.getElementById('grid-modal');
+            modal.classList.toggle('hidden');
+        }
+
+        function showSummaryModal() {
+            const answeredCount = Object.keys(userAnswers).length;
+            const totalQuestions = quizQuestions.length;
+
+            let correctCount = 0;
+            Object.keys(userAnswers).forEach(realIdx => {
+                if (userAnswers[realIdx] === quizQuestions[realIdx].ans) {
+                    correctCount++;
+                }
+            });
+            let wrongCount = answeredCount - correctCount;
+
+            // Grade on a scale of 100
+            const finalScore = Math.round((correctCount / totalQuestions) * 100);
+
+            document.getElementById('modal-stat-answered').innerText = `${answeredCount} / ${totalQuestions}`;
+            document.getElementById('modal-stat-correct').innerText = correctCount;
+            document.getElementById('modal-stat-wrong').innerText = wrongCount;
+            document.getElementById('modal-score-grade').innerText = finalScore;
+
+            // Feedback Message
+            const feedbackEl = document.getElementById('modal-grade-feedback');
+            if (finalScore >= 90) {
+                feedbackEl.innerText = "🌟 Luar Biasa! Pemahaman konsep dan Vieta sangat istimewa!";
+                feedbackEl.className = "text-xs font-semibold text-emerald-700";
+            } else if (finalScore >= 75) {
+                feedbackEl.innerText = "👍 Sangat Baik! Kamu menguasai sebagian besar materi kuadrat.";
+                feedbackEl.className = "text-xs font-semibold text-indigo-700";
+            } else if (finalScore >= 50) {
+                feedbackEl.innerText = "💪 Cukup Baik! Pelajari kembali aljabar Vieta dan pemfaktoran.";
+                feedbackEl.className = "text-xs font-semibold text-amber-700";
+            } else {
+                feedbackEl.innerText = "📚 Tetap Semangat! Tinjau ulang pembahasan soal dan latih kembali.";
+                feedbackEl.className = "text-xs font-semibold text-rose-700";
+            }
+
+            document.getElementById('summary-modal').classList.remove('hidden');
+        }
+
+        function closeSummaryModal() {
+            document.getElementById('summary-modal').classList.add('hidden');
+        }
+
+        function confirmResetQuiz() {
+            if (confirm("Apakah Anda yakin ingin mengulang kuis dari awal? Seluruh jawaban tersimpan akan dikosongkan.")) {
+                userAnswers = {};
+                currentQIndex = 0;
+                localStorage.removeItem(STORAGE_KEY);
+                closeSummaryModal();
+                filterCategory('ALL');
+            }
+        }
+
+        // Init App on Window Load
+        window.onload = function() {
+            initQuiz();
+            setTimeout(renderMath, 200);
+        };
+    </script>
+</body>
+</html>
